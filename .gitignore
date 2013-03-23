@@ -1,0 +1,10 @@
+*.swp
+*.swo
+*.*~
+*.bak
+*.pyc
+*.pyo
+build
+dist
+*.egg-info
+vim.session
