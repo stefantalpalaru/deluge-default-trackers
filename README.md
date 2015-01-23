@@ -14,6 +14,8 @@ supposed to reach public trackers.
 
     `python setup.py bdist_egg`
 
+(or try to use the one from the [egg][2] directory)
+
 * add it to Deluge from Preferences -> Plugins -> Install Plugin
 
 ## TODO:
@@ -22,3 +24,5 @@ supposed to reach public trackers.
 * WebUI version
 
 [1]: http://deluge-torrent.org/
+[2]: egg/
+
