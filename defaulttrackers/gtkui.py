@@ -156,7 +156,7 @@ class GtkUI(GtkPluginBase):
         self.opts_dialog = OptionsDialog(self)
 
     def disable(self):
-        component.get("Preferences").remove_page("DefaultTrackers")
+        component.get("Preferences").remove_page("Default Trackers")
         component.get("PluginManager").deregister_hook("on_apply_prefs", self.on_apply_prefs)
         component.get("PluginManager").deregister_hook("on_show_prefs", self.on_show_prefs)
 
