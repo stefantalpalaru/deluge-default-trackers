@@ -1,3 +1,5 @@
+#!python2
+# Force Python to compile with 2.x when 3.x is also present on dev system.
 #
 # setup.py
 #
