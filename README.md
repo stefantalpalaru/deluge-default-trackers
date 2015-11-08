@@ -14,7 +14,7 @@ supposed to reach public trackers.
 
     `python setup.py bdist_egg`
 
-(or try to use the one from the [egg][2] directory)
+(or try to use the one from the [egg][2] directory - be careful to install the py2.7 version of Deluge, http://download.deluge-torrent.org/windows/py2.7/ if you're using Windows)
 
 * add it to Deluge from Preferences -> Plugins -> Install Plugin
 
