@@ -27,14 +27,10 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <widget class="GtkEntry" id="tracker_entry">
+                  <widget class="GtkTextView" id="tracker_entry">
+                    <property name="height_request">134</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="primary_icon_activatable">False</property>
-                    <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                   </widget>
                 </child>
               </widget>
@@ -43,7 +39,7 @@
               <widget class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">&lt;b&gt;Tracker&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;Trackers&lt;/b&gt; (one per line)</property>
                 <property name="use_markup">True</property>
               </widget>
               <packing>

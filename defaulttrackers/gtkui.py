@@ -1,7 +1,7 @@
 #
 # gtkui.py
 #
-# Copyright (C) 2013 Stefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2015 Stefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -44,9 +44,9 @@ import logging
 from deluge.ui.client import client
 from deluge.plugins.pluginbase import GtkPluginBase
 import deluge.component as component
-import deluge.common
+#import deluge.common
 from deluge.ui.gtkui import dialogs
-from pprint import pprint
+#from pprint import pprint
 
 from common import get_resource
 
@@ -95,30 +95,39 @@ class OptionsDialog():
 
     def load_options(self, options):
         if options:
-            self.glade.get_widget("tracker_entry").set_text(options.get("url", ""))
+            self.glade.get_widget("tracker_entry").get_buffer().set_text(options.get("url", ""))
+
+    def in_store(self, item):
+        for row in self.gtkui.store:
+            if row[0] == item:
+                return True
+        return False
 
     def on_add(self, widget):
         try:
             options = self.generate_opts()
-            self.gtkui.store.append([options["url"]])
-            self.gtkui.trackers.append({"url": options["url"]})
+            for url in options["urls"]:
+                if not self.in_store(url):
+                    self.gtkui.store.append([url])
+                    self.gtkui.trackers.append({"url": url})
         except Exception, err:
             dialogs.ErrorDialog("Error", str(err), self.dialog).run()
 
     def generate_opts(self):
         # generate options dict based on gtk objects
+        buffer = self.glade.get_widget("tracker_entry").get_buffer()
         options = {
-            "url": self.glade.get_widget("tracker_entry").get_text(),
+            "urls": buffer.get_text(*buffer.get_bounds()).split(),
         }
-        if len(options["url"]) == 0:
-            raise Exception("empty URL")
+        if len(options["urls"]) == 0:
+            raise Exception("no URLs")
         return options
 
     def on_apply(self, widget):
         try:
             options = self.generate_opts()
-            self.gtkui.store[self.item_id][0] = options["url"]
-            self.gtkui.trackers[self.item_index]["url"] = options["url"]
+            self.gtkui.store[self.item_id][0] = options["urls"][0]
+            self.gtkui.trackers[self.item_index]["url"] = options["urls"][0]
         except Exception, err:
             dialogs.ErrorDialog("Error", str(err), self.dialog).run()
 
