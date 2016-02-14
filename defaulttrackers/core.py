@@ -71,7 +71,7 @@ class Core(CorePluginBase):
         torrent = component.get("TorrentManager")[torrent_id]
         if (torrent.torrent_info and torrent.torrent_info.priv()) or torrent.get_status(["private"])["private"]:
             return
-        trackers = torrent.get_status(["trackers"])["trackers"]
+        trackers = list(torrent.get_status(["trackers"])["trackers"])
         existing_urls = [tracker["url"] for tracker in trackers]
         got_new_trackers = False
         for new_tracker in self.config["trackers"]:
