@@ -3,7 +3,7 @@ Script: defaulttrackers.js
     The client-side javascript code for the DefaultTrackers plugin.
 
 Copyright:
-    (C) Stefan Talpalaru 2013-2015 <stefantalpalaru@yahoo.com>
+    (C) Stefan Talpalaru 2013-2016 <stefantalpalaru@yahoo.com>
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 3, or (at your option)

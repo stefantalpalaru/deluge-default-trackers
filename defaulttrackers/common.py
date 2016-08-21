@@ -1,7 +1,7 @@
 #
 # common.py
 #
-# Copyright (C) 2013-2015 Stefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2016 Stefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
