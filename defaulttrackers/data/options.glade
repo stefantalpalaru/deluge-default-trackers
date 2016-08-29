@@ -77,6 +77,7 @@ udp://open.demonii.com:1337
 http://tracker.baravik.org:6970/announce
 http://tracker2.wasabii.com.tw:6969/announce
 udp://9.rarbg.me:2710/announce
+udp://tracker.zer0day.to:1337/announce
 </property>
                 <property name="use_markup">True</property>
                 <property name="selectable">True</property>
