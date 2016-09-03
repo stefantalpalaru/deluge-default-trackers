@@ -1,11 +1,11 @@
 ## Description
 
 This is a [Deluge][1] plugin that allows you to create a list of default trackers
-that will be added to new torrents (and old ones after restarting Deluge). The
+that will be added to new public torrents (and old ones after restarting Deluge). The
 plugin will not duplicate existing trackers and does not care how the torrent
 was added so it works perfectly fine with infohashes.
 
-Don't use this plugin if you have private torrents where the details are not
+Private torrents are excluded on purpose, because their metadata is not
 supposed to reach public trackers.
 
 ## Installation
