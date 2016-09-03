@@ -54,7 +54,7 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="clicked" handler="on_up_button_clicked" swapped="no"/>
+                            <signal name="clicked" handler="on_up_button_clicked"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -69,7 +69,7 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="clicked" handler="on_add_button_clicked" swapped="no"/>
+                            <signal name="clicked" handler="on_add_button_clicked"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -84,7 +84,7 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="clicked" handler="on_edit_button_clicked" swapped="no"/>
+                            <signal name="clicked" handler="on_edit_button_clicked"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -99,7 +99,7 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="clicked" handler="on_remove_button_clicked" swapped="no"/>
+                            <signal name="clicked" handler="on_remove_button_clicked"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -114,7 +114,7 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="clicked" handler="on_down_button_clicked" swapped="no"/>
+                            <signal name="clicked" handler="on_down_button_clicked"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
