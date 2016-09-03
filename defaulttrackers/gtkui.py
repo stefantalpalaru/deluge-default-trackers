@@ -44,7 +44,6 @@ import logging
 from deluge.ui.client import client
 from deluge.plugins.pluginbase import GtkPluginBase
 import deluge.component as component
-#import deluge.common
 from deluge.ui.gtkui import dialogs
 #from pprint import pprint
 
@@ -153,6 +152,8 @@ class GtkUI(GtkPluginBase):
         scrolled_window = self.glade.get_widget("scrolledwindow1")
         self.store = self.create_model()
         self.tree_view = gtk.TreeView(self.store)
+        tree_selection = self.tree_view.get_selection()
+        tree_selection.set_mode(gtk.SELECTION_MULTIPLE)
         self.tree_view.connect("cursor-changed", self.on_listitem_activated)
         self.tree_view.connect("row-activated", self.on_edit_button_clicked)
         self.tree_view.set_rules_hint(True)
@@ -181,7 +182,7 @@ class GtkUI(GtkPluginBase):
 
     def cb_get_config(self, config):
         "callback for on show_prefs"
-        self.trackers = config["trackers"]
+        self.trackers = list(config["trackers"])
         self.store.clear()
         for tracker in self.trackers:
             self.store.append([tracker["url"]])
@@ -200,8 +201,8 @@ class GtkUI(GtkPluginBase):
         return store
 
     def on_listitem_activated(self, treeview):
-        tree, tree_id = self.tree_view.get_selection().get_selected()
-        if tree_id:
+        tree, tree_paths = self.tree_view.get_selection().get_selected_rows()
+        if tree_paths:
             self.glade.get_widget("edit_button").set_sensitive(True)
             self.glade.get_widget("remove_button").set_sensitive(True)
             self.glade.get_widget("up_button").set_sensitive(True)
@@ -216,30 +217,43 @@ class GtkUI(GtkPluginBase):
         self.opts_dialog.show()
 
     def on_remove_button_clicked(self, widget):
-        tree, tree_id = self.tree_view.get_selection().get_selected()
-        index = self.tree_view.get_selection().get_selected_rows()[1][0][0]
-        self.store.remove(tree_id)
-        del self.trackers[index]
+        tree, tree_paths = self.tree_view.get_selection().get_selected_rows()
+        to_remove = []
+        for tree_path in tree_paths:
+            tree_id = tree.get_iter(tree_path)
+            index = tree_path[0]
+            to_remove.append((index, tree_id))
+        for index, tree_id in sorted(to_remove, reverse=True):
+            # we need to delete the indices in reverse order to avoid offsets
+            del self.trackers[index]
+            self.store.remove(tree_id)
 
     def on_edit_button_clicked(self, widget):
-        tree, tree_id = self.tree_view.get_selection().get_selected()
-        index = self.tree_view.get_selection().get_selected_rows()[1][0][0]
-        url = str(self.store.get_value(tree_id, 0))
-        if url:
-            self.opts_dialog.show({
-                "url": url,
-            }, tree_id, index)
+        tree, tree_paths = self.tree_view.get_selection().get_selected_rows()
+        if tree_paths:
+            tree_path = tree_paths[0]
+            tree_id = tree.get_iter(tree_path)
+            index = tree_path[0]
+            url = str(self.store.get_value(tree_id, 0))
+            if url:
+                self.opts_dialog.show({
+                    "url": url,
+                }, tree_id, index)
 
     def on_up_button_clicked(self, widget):
-        tree, tree_id = self.tree_view.get_selection().get_selected()
-        if tree_id is not None:
+        tree, tree_paths = self.tree_view.get_selection().get_selected_rows()
+        if tree_paths:
+            tree_path = tree_paths[0]
+            tree_id = tree.get_iter(tree_path)
             prev = iter_prev(tree_id, self.store)
             if prev is not None:
                 self.store.swap(prev, tree_id)
 
     def on_down_button_clicked(self, widget):
-        tree, tree_id = self.tree_view.get_selection().get_selected()
-        if tree_id is not None:
+        tree, tree_paths = self.tree_view.get_selection().get_selected_rows()
+        if tree_paths:
+            tree_path = tree_paths[0]
+            tree_id = tree.get_iter(tree_path)
             nexti = self.store.iter_next(tree_id)
             if nexti is not None:
                 self.store.swap(tree_id, nexti)
