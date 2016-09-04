@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 #
 # setup.py
 #
-# Copyright (C) 2013-2015 Stefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2016 Stefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -38,22 +39,22 @@
 #    statement from all source files in the program, then also delete it here.
 #
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 __plugin_name__ = "DefaultTrackers"
-__author__ = "Stefan Talpalaru"
+__author__ = u"Ștefan Talpalaru"
 __author_email__ = "stefantalpalaru@yahoo.com"
 __version__ = "0.1"
 __url__ = "https://github.com/stefantalpalaru/deluge-default-trackers"
 __license__ = "GPLv3"
-__description__ = "Add a list of default trackers to all the torrents"
+__description__ = "Add a list of default trackers to all the public torrents"
 __long_description__ = """
-Create a list of default trackers that will be added to new torrents (and old
-ones after restarting Deluge). The plugin will not duplicate existing trackers
-and does not care how the torrent was added so it works perfectly fine with
-infohashes.
+Create a list of default trackers that will be added to new public torrents
+(and old ones after restarting Deluge). The plugin will not duplicate existing
+trackers and does not care how the torrent was added so it works perfectly fine
+with infohashes.
 
-Don't use this plugin if you have private torrents where the details are not
+Private torrents are excluded on purpose, because their metadata is not
 supposed to reach public trackers.
 """
 __pkg_data__ = {__plugin_name__.lower(): ["data/*"]}
