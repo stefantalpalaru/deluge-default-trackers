@@ -67,7 +67,7 @@ class Core(CorePluginBase):
     def update(self):
         pass
 
-    def on_torrent_added(self, torrent_id):
+    def on_torrent_added(self, torrent_id, from_state=False):
         torrent = component.get("TorrentManager")[torrent_id]
         if (torrent.torrent_info and torrent.torrent_info.priv()) or torrent.get_status(["private"])["private"]:
             return
@@ -96,4 +96,3 @@ class Core(CorePluginBase):
     def get_config(self):
         """Returns the config dictionary"""
         return self.config.config
-
