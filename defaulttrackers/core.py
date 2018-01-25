@@ -45,10 +45,19 @@ import deluge.configmanager
 from deluge.core.rpcserver import export
 
 DEFAULT_PREFS = {
+    "dynamic_trackerlist":"https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt",
     "trackers": [
         #{"url": "test"},
     ],
 }
+
+if DEFAULT_PREFS["dynamic_trackerlist"]:
+    import urllib2 as u2
+    trackers = u2.urlopen(DEFAULT_PREFS["dynamic_trackerlist"]).read()
+    trackers = [ {"url":n} for n in trackers.split("\n\n") if n ]
+    del u2
+    DEFAULT_PREFS["trackers"]+=trackers
+    del trackers
 
 log = logging.getLogger(__name__)
 
