@@ -43,11 +43,13 @@ from deluge.plugins.pluginbase import CorePluginBase
 import deluge.component as component
 import deluge.configmanager
 from deluge.core.rpcserver import export
+import urllib2
 
 DEFAULT_PREFS = {
     "trackers": [
         #{"url": "test"},
     ],
+    # "dynamic_trackerlist":"https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt",
 }
 
 log = logging.getLogger(__name__)
@@ -67,14 +69,25 @@ class Core(CorePluginBase):
     def update(self):
         pass
 
+    def update_trackerlist(self):
+        trackers = urllib2.urlopen(self.config["dynamic_trackerlist"]).read()
+        trackers = [ {"url":n} for n in trackers.split("\n\n") if n ]
+        self.config["dynamic_trackers"] = trackers
+        del trackers
+
     def on_torrent_added(self, torrent_id, from_state=False):
         torrent = component.get("TorrentManager")[torrent_id]
         if (torrent.torrent_info and torrent.torrent_info.priv()) or torrent.get_status(["private"])["private"]:
             return
         trackers = list(torrent.get_status(["trackers"])["trackers"])
         existing_urls = [tracker["url"] for tracker in trackers]
+        if "dynamic_trackerlist" in self.config:
+            if self.config["dynamic_trackerlist"]:
+                self.update_trackerlist()
+        else:
+            self.config["dynamic_trackers"] = []
         got_new_trackers = False
-        for new_tracker in self.config["trackers"]:
+        for new_tracker in self.config["trackers"]+self.config["dynamic_trackers"]:
             if new_tracker["url"] not in existing_urls:
                 got_new_trackers = True
                 trackers.append({
