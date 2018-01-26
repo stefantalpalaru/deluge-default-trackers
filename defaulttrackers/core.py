@@ -43,7 +43,8 @@ from deluge.plugins.pluginbase import CorePluginBase
 import deluge.component as component
 import deluge.configmanager
 from deluge.core.rpcserver import export
-import urllib2
+from urllib2 import urlopen
+from time import time
 
 DEFAULT_PREFS = {
     "trackers": [
@@ -55,6 +56,7 @@ DEFAULT_PREFS = {
 log = logging.getLogger(__name__)
 
 class Core(CorePluginBase):
+    LAST_DYNAMIC_TRACKERS_UPDATE = 0
     def enable(self):
         self.config = deluge.configmanager.ConfigManager("defaulttrackers.conf", DEFAULT_PREFS)
         component.get("EventManager").register_event_handler(
@@ -70,10 +72,12 @@ class Core(CorePluginBase):
         pass
 
     def update_trackerlist(self):
-        trackers = urllib2.urlopen(self.config["dynamic_trackerlist"]).read()
-        trackers = [ {"url":n} for n in trackers.split("\n\n") if n ]
-        self.config["dynamic_trackers"] = trackers
-        del trackers
+        if time()-self.LAST_DYNAMIC_TRACKERS_UPDATE > 3600:
+            trackers = urlopen(self.config["dynamic_trackerlist"]).read()
+            trackers = [ {"url":n} for n in trackers.split("\n") if n ]
+            self.config["dynamic_trackers"] = trackers
+            del trackers
+            self.LAST_DYNAMIC_TRACKERS_UPDATE = time()
 
     def on_torrent_added(self, torrent_id, from_state=False):
         torrent = component.get("TorrentManager")[torrent_id]
