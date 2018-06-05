@@ -1,7 +1,7 @@
-#
+# -*- coding: utf-8 -*-
 # gtkui.py
 #
-# Copyright (C) 2013-2016 Stefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2018 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -142,6 +142,7 @@ class GtkUI(GtkPluginBase):
             "on_remove_button_clicked": self.on_remove_button_clicked,
             "on_up_button_clicked": self.on_up_button_clicked,
             "on_down_button_clicked": self.on_down_button_clicked,
+            "on_reload_now_clicked": self.on_reload_now_clicked,
         })
 
         component.get("Preferences").add_page("Default Trackers", self.glade.get_widget("prefs_box"))
@@ -172,16 +173,28 @@ class GtkUI(GtkPluginBase):
 
     def on_apply_prefs(self):
         log.debug("applying prefs for DefaultTrackers")
-        config = {
-            "trackers": [{"url": str(row[0])} for row in self.store]
-        }
-        client.defaulttrackers.set_config(config)
+        try:
+            update_interval = int(self.glade.get_widget("tracker_list_update_interval").get_text() or 1)
+        except:
+            update_interval = 1
+        self.config.update({
+            "trackers": [{"url": str(row[0])} for row in self.store],
+            "dynamic_trackerlist_url": self.glade.get_widget("tracker_list_url").get_text(),
+            "dynamic_trackers_update_interval": update_interval,
+        })
+        client.defaulttrackers.set_config(self.config)
 
     def on_show_prefs(self):
         client.defaulttrackers.get_config().addCallback(self.cb_get_config)
 
     def cb_get_config(self, config):
         "callback for on show_prefs"
+        self.config = config
+        # dynamic tracker list
+        if config["dynamic_trackerlist_url"]:
+            self.glade.get_widget("tracker_list_url").set_text(config["dynamic_trackerlist_url"])
+        self.glade.get_widget("tracker_list_update_interval").set_text(str(config["dynamic_trackers_update_interval"]))
+        # trackers
         self.trackers = list(config["trackers"])
         self.store.clear()
         for tracker in self.trackers:
@@ -257,4 +270,11 @@ class GtkUI(GtkPluginBase):
             nexti = self.store.iter_next(tree_id)
             if nexti is not None:
                 self.store.swap(tree_id, nexti)
+
+    def on_reload_now_clicked(self, widget):
+        # reset the last update timestamp
+        self.config["last_dynamic_trackers_update"] = 0
+        self.on_apply_prefs()
+        # we need to reload the tracker list after the update
+        client.defaulttrackers.update_trackerlist_from_url().addCallback(self.cb_get_config)
 

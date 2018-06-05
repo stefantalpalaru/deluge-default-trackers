@@ -8,6 +8,8 @@ was added so it works perfectly fine with infohashes.
 Private torrents are excluded on purpose, because their metadata is not
 supposed to reach public trackers.
 
+Besides manually creating the default tracker list, you can also load it (periodically) from a URL.
+
 ## Installation
 
 * create the egg with
@@ -18,6 +20,10 @@ supposed to reach public trackers.
 
 * add it to Deluge from Preferences -> Plugins -> Install Plugin
 
+## Dependencies
+
+* [Requests][3]
+
 ## TODO:
 
 * log the added trackers so we can remove them from torrents when they are deleted from the default list
@@ -25,4 +31,5 @@ supposed to reach public trackers.
 
 [1]: http://deluge-torrent.org/
 [2]: egg/
+[3]: http://python-requests.org/
 
