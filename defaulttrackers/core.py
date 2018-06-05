@@ -1,7 +1,7 @@
-#
+# -*- coding: utf-8 -*-
 # core.py
 #
-# Copyright (C) 2013-2016 Stefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2018 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -38,16 +38,27 @@
 #    statement from all source files in the program, then also delete it here.
 #
 
+import datetime
 import logging
+import re
+import requests
+import time
+import traceback
+
+from deluge.common import is_url
+from deluge.core.rpcserver import export
 from deluge.plugins.pluginbase import CorePluginBase
 import deluge.component as component
 import deluge.configmanager
-from deluge.core.rpcserver import export
+
 
 DEFAULT_PREFS = {
     "trackers": [
-        #{"url": "test"},
+        #{"url": "udp://foo.bar:6969/announce"},
     ],
+    "dynamic_trackerlist_url": "",
+    "last_dynamic_trackers_update": 0, # UTC timestamp
+    "dynamic_trackers_update_interval": 1, # in days
 }
 
 log = logging.getLogger(__name__)
@@ -67,12 +78,30 @@ class Core(CorePluginBase):
     def update(self):
         pass
 
+    @export
+    def update_trackerlist_from_url(self):
+        if self.config["dynamic_trackerlist_url"]:
+            now = datetime.datetime.utcnow()
+            last_update = datetime.datetime.utcfromtimestamp(self.config["last_dynamic_trackers_update"])
+            if now - last_update > datetime.timedelta(days=self.config["dynamic_trackers_update_interval"]):
+                old_trackers = set([t["url"] for t in self.config["trackers"]])
+                try:
+                    page = requests.get(self.config["dynamic_trackerlist_url"]).text
+                    new_trackers = [url for url in re.findall(r'\w+://[\w\-.:/]+', page) if is_url(url) and url not in old_trackers]
+                    for new_tracker in new_trackers:
+                        self.config["trackers"].append({"url": new_tracker})
+                    self.config["last_dynamic_trackers_update"] = time.mktime(now.timetuple())
+                except:
+                    traceback.print_exc()
+        return self.config.config
+
     def on_torrent_added(self, torrent_id, from_state=False):
         torrent = component.get("TorrentManager")[torrent_id]
         if (torrent.torrent_info and torrent.torrent_info.priv()) or torrent.get_status(["private"])["private"]:
             return
         trackers = list(torrent.get_status(["trackers"])["trackers"])
         existing_urls = [tracker["url"] for tracker in trackers]
+        self.update_trackerlist_from_url()
         got_new_trackers = False
         for new_tracker in self.config["trackers"]:
             if new_tracker["url"] not in existing_urls:
@@ -96,3 +125,4 @@ class Core(CorePluginBase):
     def get_config(self):
         """Returns the config dictionary"""
         return self.config.config
+
