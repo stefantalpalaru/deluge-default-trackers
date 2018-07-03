@@ -41,7 +41,6 @@
 import datetime
 import logging
 import re
-import requests
 import time
 import traceback
 
@@ -81,15 +80,18 @@ class Core(CorePluginBase):
     @export
     def update_trackerlist_from_url(self):
         if self.config["dynamic_trackerlist_url"]:
+            import requests # hide the import here in an attempt to lower the number of bug reports from people not having "python-requests" installed
             now = datetime.datetime.utcnow()
             last_update = datetime.datetime.utcfromtimestamp(self.config["last_dynamic_trackers_update"])
             if now - last_update > datetime.timedelta(days=self.config["dynamic_trackers_update_interval"]):
-                old_trackers = set([t["url"] for t in self.config["trackers"]])
                 try:
                     page = requests.get(self.config["dynamic_trackerlist_url"]).text
-                    new_trackers = [url for url in re.findall(r'\w+://[\w\-.:/]+', page) if is_url(url) and url not in old_trackers]
-                    for new_tracker in new_trackers:
-                        self.config["trackers"].append({"url": new_tracker})
+                    new_trackers = [url for url in re.findall(r'\w+://[\w\-.:/]+', page) if is_url(url)]
+                    if new_trackers:
+                        # replace all existing trackers
+                        self.config["trackers"] = []
+                        for new_tracker in new_trackers:
+                            self.config["trackers"].append({"url": new_tracker})
                     self.config["last_dynamic_trackers_update"] = time.mktime(now.timetuple())
                 except:
                     traceback.print_exc()

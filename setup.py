@@ -2,7 +2,7 @@
 #
 # setup.py
 #
-# Copyright (C) 2013-2016 Stefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2018 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -71,6 +71,9 @@ setup(
 
     packages=[__plugin_name__.lower()],
     package_data = __pkg_data__,
+    install_requires=[
+        'requests',
+    ],
 
     entry_points="""
     [deluge.plugin.core]
