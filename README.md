@@ -16,7 +16,7 @@ Besides manually creating the default tracker list, you can also load it (period
 
     `python setup.py bdist_egg`
 
-(or try to use the one from the [egg][2] directory - be careful to install the py2.7 version of Deluge, http://download.deluge-torrent.org/windows/py2.7/ if you're using Windows)
+(or try to use the one from the [egg][2] directory - be careful to install the py2.7 version of Deluge, if you're using Windows)
 
 * add it to Deluge from Preferences -> Plugins -> Install Plugin
 
