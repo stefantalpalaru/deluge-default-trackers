@@ -20,9 +20,11 @@ Besides manually creating the default tracker list, you can also load it (period
 
 * add it to Deluge from Preferences -> Plugins -> Install Plugin
 
-## Dependencies
+## Troubleshooting
 
-* [Requests][3]
+To get Deluge's output on Windows, run this in a terminal ("cmd" works):
+
+`"%ProgramFiles%\Deluge\deluge-debug.exe"`
 
 ## TODO:
 
@@ -31,5 +33,4 @@ Besides manually creating the default tracker list, you can also load it (period
 
 [1]: http://deluge-torrent.org/
 [2]: egg/
-[3]: http://python-requests.org/
 
