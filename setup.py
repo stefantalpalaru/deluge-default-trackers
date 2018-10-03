@@ -72,7 +72,6 @@ setup(
     packages=[__plugin_name__.lower()],
     package_data = __pkg_data__,
     install_requires=[
-        'requests',
     ],
 
     entry_points="""

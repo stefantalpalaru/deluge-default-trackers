@@ -41,8 +41,10 @@
 import datetime
 import logging
 import re
+import ssl
 import time
 import traceback
+import urllib2
 
 from deluge.common import is_url
 from deluge.core.rpcserver import export
@@ -80,12 +82,24 @@ class Core(CorePluginBase):
     @export
     def update_trackerlist_from_url(self):
         if self.config["dynamic_trackerlist_url"]:
-            import requests # hide the import here in an attempt to lower the number of bug reports from people not having "python-requests" installed
             now = datetime.datetime.utcnow()
             last_update = datetime.datetime.utcfromtimestamp(self.config["last_dynamic_trackers_update"])
             if now - last_update > datetime.timedelta(days=self.config["dynamic_trackers_update_interval"]):
                 try:
-                    page = requests.get(self.config["dynamic_trackerlist_url"]).text
+                    headers = {
+                            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0',
+                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                            'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+                            'Accept-Encoding': 'none',
+                            'Accept-Language': 'en-US,en;q=0.8',
+                            }
+
+                    req = urllib2.Request(self.config["dynamic_trackerlist_url"], headers=headers)
+                    try:
+                        page = urllib2.urlopen(req, context=ssl._create_unverified_context()).read()
+                    except:
+                        # maybe an older Python version without a "context" argument
+                        page = urllib2.urlopen(req).read()
                     new_trackers = [url for url in re.findall(r'\w+://[\w\-.:/]+', page) if is_url(url)]
                     if new_trackers:
                         # replace all existing trackers
