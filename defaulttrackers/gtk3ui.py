@@ -39,13 +39,13 @@
 #
 
 from __future__ import absolute_import, unicode_literals
-import gtk
+from gi.repository import Gtk
 import logging
 
 from deluge.ui.client import client
-from deluge.plugins.pluginbase import GtkPluginBase
+from deluge.plugins.pluginbase import Gtk3PluginBase
 import deluge.component as component
-from deluge.ui.gtkui import dialogs
+from deluge.ui.gtk3 import dialogs
 #from pprint import pprint
 
 from .common import get_resource
@@ -67,25 +67,25 @@ class OptionsDialog():
         self.gtkui = gtkui
 
     def show(self, options=None, item_id=None, item_index=None):
-        self.glade = gtk.glade.XML(get_resource("options.glade"))
-        self.glade.signal_autoconnect({
+        self.builder = Gtk.Builder.new_from_file(get_resource("config.ui"))
+        self.builder.connect_signals({
             "on_opts_add_button_clicked": self.on_add,
             "on_opts_apply_button_clicked": self.on_apply,
             "on_opts_cancel_button_clicked": self.on_cancel,
             "on_options_dialog_close": self.on_cancel,
         })
-        self.dialog = self.glade.get_widget("options_dialog")
+        self.dialog = self.builder.get_object("options_dialog")
         self.dialog.set_transient_for(component.get("Preferences").pref_dialog)
 
         if item_id:
             #We have an existing item_id, we are editing
-            self.glade.get_widget("opts_add_button").hide()
-            self.glade.get_widget("opts_apply_button").show()
+            self.builder.get_object("opts_add_button").hide()
+            self.builder.get_object("opts_apply_button").show()
             self.item_id = item_id
         else:
             #We don't have an id, adding
-            self.glade.get_widget("opts_add_button").show()
-            self.glade.get_widget("opts_apply_button").hide()
+            self.builder.get_object("opts_add_button").show()
+            self.builder.get_object("opts_apply_button").hide()
             self.item_id = None
         self.item_index = item_index
 
@@ -95,7 +95,7 @@ class OptionsDialog():
 
     def load_options(self, options):
         if options:
-            self.glade.get_widget("tracker_entry").get_buffer().set_text(options.get("url", ""))
+            self.builder.get_object("tracker_entry").get_buffer().set_text(options.get("url", ""))
 
     def in_store(self, item):
         for row in self.gtkui.store:
@@ -115,7 +115,7 @@ class OptionsDialog():
 
     def generate_opts(self):
         # generate options dict based on gtk objects
-        buffer = self.glade.get_widget("tracker_entry").get_buffer()
+        buffer = self.builder.get_object("tracker_entry").get_buffer()
         options = {
             "urls": buffer.get_text(*buffer.get_bounds()).split(),
         }
@@ -132,12 +132,12 @@ class OptionsDialog():
             dialogs.ErrorDialog("Error", str(err), self.dialog).run()
 
     def on_cancel(self, widget):
-        self.dialog.response(gtk.RESPONSE_DELETE_EVENT)
+        self.dialog.response(Gtk.ResponseType.DELETE_EVENT)
 
-class GtkUI(GtkPluginBase):
+class Gtk3UI(Gtk3PluginBase):
     def enable(self):
-        self.glade = gtk.glade.XML(get_resource("config.glade"))
-        self.glade.signal_autoconnect({
+        self.builder = Gtk.Builder.new_from_file(get_resource("config.ui"))
+        self.builder.connect_signals({
             "on_add_button_clicked": self.on_add_button_clicked,
             "on_edit_button_clicked": self.on_edit_button_clicked,
             "on_remove_button_clicked": self.on_remove_button_clicked,
@@ -146,21 +146,21 @@ class GtkUI(GtkPluginBase):
             "on_reload_now_clicked": self.on_reload_now_clicked,
         })
 
-        component.get("Preferences").add_page("Default Trackers", self.glade.get_widget("prefs_box"))
+        component.get("Preferences").add_page("Default Trackers", self.builder.get_object("prefs_box"))
         component.get("PluginManager").register_hook("on_apply_prefs", self.on_apply_prefs)
         component.get("PluginManager").register_hook("on_show_prefs", self.on_show_prefs)
 
         self.trackers = []
-        scrolled_window = self.glade.get_widget("scrolledwindow1")
+        scrolled_window = self.builder.get_object("scrolledwindow1")
         self.store = self.create_model()
-        self.tree_view = gtk.TreeView(self.store)
+        self.tree_view = Gtk.TreeView(self.store)
         tree_selection = self.tree_view.get_selection()
-        tree_selection.set_mode(gtk.SELECTION_MULTIPLE)
+        tree_selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         self.tree_view.connect("cursor-changed", self.on_listitem_activated)
         self.tree_view.connect("row-activated", self.on_edit_button_clicked)
         self.tree_view.set_rules_hint(True)
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("URL", rendererText, text=0)
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("URL", rendererText, text=0)
         self.tree_view.append_column(column)
         scrolled_window.add(self.tree_view)
         scrolled_window.show_all()
@@ -175,12 +175,12 @@ class GtkUI(GtkPluginBase):
     def on_apply_prefs(self):
         log.debug("applying prefs for DefaultTrackers")
         try:
-            update_interval = int(self.glade.get_widget("tracker_list_update_interval").get_text() or 1)
+            update_interval = int(self.builder.get_object("tracker_list_update_interval").get_text() or 1)
         except:
             update_interval = 1
         self.config.update({
             "trackers": [{"url": str(row[0])} for row in self.store],
-            "dynamic_trackerlist_url": self.glade.get_widget("tracker_list_url").get_text(),
+            "dynamic_trackerlist_url": self.builder.get_object("tracker_list_url").get_text(),
             "dynamic_trackers_update_interval": update_interval,
         })
         client.defaulttrackers.set_config(self.config)
@@ -193,23 +193,23 @@ class GtkUI(GtkPluginBase):
         self.config = config
         # dynamic tracker list
         if config["dynamic_trackerlist_url"]:
-            self.glade.get_widget("tracker_list_url").set_text(config["dynamic_trackerlist_url"])
-        self.glade.get_widget("tracker_list_update_interval").set_text(str(config["dynamic_trackers_update_interval"]))
+            self.builder.get_object("tracker_list_url").set_text(config["dynamic_trackerlist_url"])
+        self.builder.get_object("tracker_list_update_interval").set_text(str(config["dynamic_trackers_update_interval"]))
         # trackers
         self.trackers = list(config["trackers"])
         self.store.clear()
         for tracker in self.trackers:
             self.store.append([tracker["url"]])
-        # Workaround for cached glade signal appearing when re-enabling plugin in same session
-        if self.glade.get_widget("edit_button"):
+        # Workaround for cached builder signal appearing when re-enabling plugin in same session
+        if self.builder.get_object("edit_button"):
             # Disable the remove and edit buttons, because nothing in the store is selected
-            self.glade.get_widget("remove_button").set_sensitive(False)
-            self.glade.get_widget("edit_button").set_sensitive(False)
-            self.glade.get_widget("up_button").set_sensitive(False)
-            self.glade.get_widget("down_button").set_sensitive(False)
+            self.builder.get_object("remove_button").set_sensitive(False)
+            self.builder.get_object("edit_button").set_sensitive(False)
+            self.builder.get_object("up_button").set_sensitive(False)
+            self.builder.get_object("down_button").set_sensitive(False)
 
     def create_model(self):
-        store = gtk.ListStore(str)
+        store = Gtk.ListStore(str)
         for tracker in self.trackers:
             store.append([tracker["url"]])
         return store
@@ -217,15 +217,15 @@ class GtkUI(GtkPluginBase):
     def on_listitem_activated(self, treeview):
         tree, tree_paths = self.tree_view.get_selection().get_selected_rows()
         if tree_paths:
-            self.glade.get_widget("edit_button").set_sensitive(True)
-            self.glade.get_widget("remove_button").set_sensitive(True)
-            self.glade.get_widget("up_button").set_sensitive(True)
-            self.glade.get_widget("down_button").set_sensitive(True)
+            self.builder.get_object("edit_button").set_sensitive(True)
+            self.builder.get_object("remove_button").set_sensitive(True)
+            self.builder.get_object("up_button").set_sensitive(True)
+            self.builder.get_object("down_button").set_sensitive(True)
         else:
-            self.glade.get_widget("edit_button").set_sensitive(False)
-            self.glade.get_widget("remove_button").set_sensitive(False)
-            self.glade.get_widget("up_button").set_sensitive(False)
-            self.glade.get_widget("down_button").set_sensitive(False)
+            self.builder.get_object("edit_button").set_sensitive(False)
+            self.builder.get_object("remove_button").set_sensitive(False)
+            self.builder.get_object("up_button").set_sensitive(False)
+            self.builder.get_object("down_button").set_sensitive(False)
 
     def on_add_button_clicked(self, widget):
         self.opts_dialog.show()

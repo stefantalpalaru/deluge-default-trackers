@@ -10,6 +10,8 @@ supposed to reach public trackers.
 
 Besides manually creating the default tracker list, you can also load it (periodically) from a URL.
 
+This plugin is compatible with Deluge 1.3 and 2.0, Python2 2.7 and Python3 3.5+.
+
 ## Installation
 
 * create the egg with
@@ -17,6 +19,8 @@ Besides manually creating the default tracker list, you can also load it (period
     `python setup.py bdist_egg`
 
 (or try to use [the one from the "egg" directory][2] - be careful to install the py2.7 version of Deluge, if you're using Windows)
+
+* you need to use the same version of Python as the one that Deluge is running under.
 
 * add it to Deluge from Preferences -> Plugins -> Install Plugin
 

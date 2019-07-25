@@ -2,7 +2,7 @@
 #
 # setup.py
 #
-# Copyright (C) 2013-2018 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2019 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -39,12 +39,13 @@
 #    statement from all source files in the program, then also delete it here.
 #
 
+from __future__ import absolute_import
 from setuptools import setup
 
 __plugin_name__ = "DefaultTrackers"
 __author__ = u"Ștefan Talpalaru"
 __author_email__ = "stefantalpalaru@yahoo.com"
-__version__ = "0.1"
+__version__ = "0.2"
 __url__ = "https://github.com/stefantalpalaru/deluge-default-trackers"
 __license__ = "GPLv3"
 __description__ = "Add a list of default trackers to all the public torrents"
@@ -72,6 +73,7 @@ setup(
     packages=[__plugin_name__.lower()],
     package_data = __pkg_data__,
     install_requires=[
+        'six',
     ],
 
     entry_points="""
@@ -79,6 +81,8 @@ setup(
     %(plugin_name)s = %(plugin_module)s:CorePlugin
     [deluge.plugin.gtkui]
     %(plugin_name)s = %(plugin_module)s:GtkUIPlugin
+    [deluge.plugin.gtk3ui]
+    %(plugin_name)s = %(plugin_module)s:Gtk3UIPlugin
     [deluge.plugin.web]
     %(plugin_name)s = %(plugin_module)s:WebUIPlugin
     """ % dict(plugin_name=__plugin_name__, plugin_module=__plugin_name__.lower())

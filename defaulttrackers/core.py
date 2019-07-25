@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # core.py
 #
-# Copyright (C) 2013-2018 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2019 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -38,13 +38,14 @@
 #    statement from all source files in the program, then also delete it here.
 #
 
+from __future__ import absolute_import, unicode_literals
 import datetime
 import logging
 import re
 import ssl
 import time
 import traceback
-import urllib2
+import six
 
 from deluge.common import is_url
 from deluge.core.rpcserver import export
@@ -94,13 +95,13 @@ class Core(CorePluginBase):
                             'Accept-Language': 'en-US,en;q=0.8',
                             }
 
-                    req = urllib2.Request(self.config["dynamic_trackerlist_url"], headers=headers)
+                    req = six.moves.urllib.request.Request(self.config["dynamic_trackerlist_url"], headers=headers)
                     try:
-                        page = urllib2.urlopen(req, context=ssl._create_unverified_context()).read()
+                        page = six.moves.urllib.request.urlopen(req, context=ssl._create_unverified_context()).read()
                     except:
                         # maybe an older Python version without a "context" argument
-                        page = urllib2.urlopen(req).read()
-                    new_trackers = [url for url in re.findall(r'\w+://[\w\-.:/]+', page) if is_url(url)]
+                        page = six.moves.urllib.request.urlopen(req).read()
+                    new_trackers = [six.ensure_str(url) for url in re.findall(b'\w+://[\w\-.:/]+', page) if is_url(six.ensure_text(url))]
                     if new_trackers:
                         # replace all existing trackers
                         self.config["trackers"] = []

@@ -1,7 +1,7 @@
 #
 # common.py
 #
-# Copyright (C) 2013-2016 Stefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2019 Stefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -38,6 +38,8 @@
 #    statement from all source files in the program, then also delete it here.
 #
 
+
+from __future__ import absolute_import, unicode_literals
 
 def get_resource(filename):
     import pkg_resources, os
