@@ -22,6 +22,8 @@ This plugin is compatible with Deluge 1.3 and 2.0, Python2 2.7 and Python3 3.5+.
 
 * you need to use the same version of Python as the one that Deluge is running under.
 
+* if you're using it with Deluge-1.3, you might not have [six](https://pypi.org/project/six/) installed. Install it.
+
 * add it to Deluge from Preferences -> Plugins -> Install Plugin
 
 ## Troubleshooting
