@@ -73,7 +73,7 @@ setup(
     packages=[__plugin_name__.lower()],
     package_data = __pkg_data__,
     install_requires=[
-        'six',
+        'six>=1.12',
     ],
 
     entry_points="""
