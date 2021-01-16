@@ -10,7 +10,7 @@ supposed to reach public trackers.
 
 Besides manually creating the default tracker list, you can also load it (periodically) from a URL.
 
-This plugin is compatible with Deluge 1.3 and 2.0, Python2 2.7 and Python3 3.5+.
+This plugin is compatible with Deluge 2.0 and Python 3.6+.
 
 ## Installation
 
@@ -21,8 +21,6 @@ This plugin is compatible with Deluge 1.3 and 2.0, Python2 2.7 and Python3 3.5+.
 (or try to use [the one from the "egg" directory][2] - be careful to install the py2.7 version of Deluge, if you're using Windows)
 
 * you need to use the same version of Python as the one that Deluge is running under.
-
-* if you're using it with Deluge-1.3, you might not have [six](https://pypi.org/project/six/) installed. Install it.
 
 * add it to Deluge from Preferences -> Plugins -> Install Plugin
 

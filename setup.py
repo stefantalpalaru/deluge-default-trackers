@@ -45,7 +45,7 @@ from setuptools import setup
 __plugin_name__ = "DefaultTrackers"
 __author__ = u"Ștefan Talpalaru"
 __author_email__ = "stefantalpalaru@yahoo.com"
-__version__ = "0.2"
+__version__ = "0.3"
 __url__ = "https://github.com/stefantalpalaru/deluge-default-trackers"
 __license__ = "GPLv3"
 __description__ = "Add a list of default trackers to all the public torrents"
@@ -71,10 +71,8 @@ setup(
     long_description=__long_description__ if __long_description__ else __description__,
 
     packages=[__plugin_name__.lower()],
-    package_data = __pkg_data__,
-    install_requires=[
-        'six>=1.12',
-    ],
+    package_data=__pkg_data__,
+    install_requires=[],
 
     entry_points="""
     [deluge.plugin.core]

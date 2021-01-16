@@ -45,7 +45,7 @@ import re
 import ssl
 import time
 import traceback
-import six
+import urllib
 
 from deluge.common import is_url
 from deluge.core.rpcserver import export
@@ -95,13 +95,13 @@ class Core(CorePluginBase):
                             'Accept-Language': 'en-US,en;q=0.8',
                             }
 
-                    req = six.moves.urllib.request.Request(self.config["dynamic_trackerlist_url"], headers=headers)
+                    req = urllib.request.Request(self.config["dynamic_trackerlist_url"], headers=headers)
                     try:
-                        page = six.moves.urllib.request.urlopen(req, context=ssl._create_unverified_context()).read()
+                        page = urllib.request.urlopen(req, context=ssl._create_unverified_context()).read()
                     except:
                         # maybe an older Python version without a "context" argument
-                        page = six.moves.urllib.request.urlopen(req).read()
-                    new_trackers = [six.ensure_str(url) for url in re.findall(b'\w+://[\w\-.:/]+', page) if is_url(six.ensure_text(url))]
+                        page = urllib.request.urlopen(req).read()
+                    new_trackers = [url for url in re.findall(b'\w+://[\w\-.:/]+', page) if is_url(url)]
                     if new_trackers:
                         # replace all existing trackers
                         self.config["trackers"] = []
