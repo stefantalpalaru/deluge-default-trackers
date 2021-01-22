@@ -47,7 +47,7 @@ import time
 import traceback
 import urllib
 
-from deluge.common import is_url
+from deluge.common import is_url, decode_bytes
 from deluge.core.rpcserver import export
 from deluge.plugins.pluginbase import CorePluginBase
 import deluge.component as component
@@ -101,7 +101,7 @@ class Core(CorePluginBase):
                     except:
                         # maybe an older Python version without a "context" argument
                         page = urllib.request.urlopen(req).read()
-                    new_trackers = [url for url in re.findall(b'\w+://[\w\-.:/]+', page) if is_url(url)]
+                    new_trackers = [decode_bytes(url) for url in re.findall(b'\w+://[\w\-.:/]+', page) if is_url(decode_bytes(url))]
                     if new_trackers:
                         # replace all existing trackers
                         self.config["trackers"] = []
