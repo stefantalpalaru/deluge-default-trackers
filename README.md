@@ -18,9 +18,9 @@ This plugin is compatible with Deluge 2.0 and Python 3.6+.
 
     `python setup.py bdist_egg`
 
-(or try to use [the one from the "egg" directory][2] - be careful to install the py2.7 version of Deluge, if you're using Windows)
+(or try to use [the one from the "egg" directory][2] - rename it, if it doesn't match your Python3 version)
 
-* you need to use the same version of Python as the one that Deluge is running under.
+* you need to use the same version of Python3 as the one that Deluge is running under.
 
 * add it to Deluge from Preferences -> Plugins -> Install Plugin
 
@@ -36,5 +36,5 @@ To get Deluge's output on Windows, run this in a terminal ("cmd" works):
 * WebUI version
 
 [1]: http://deluge-torrent.org/
-[2]: https://github.com/stefantalpalaru/deluge-default-trackers/raw/master/egg/DefaultTrackers-0.2-py2.7.egg
+[2]: https://github.com/stefantalpalaru/deluge-default-trackers/raw/master/egg/DefaultTrackers-0.3-py3.7.egg
 
