@@ -24,6 +24,10 @@ This plugin is compatible with Deluge 2.0 and Python 3.6+.
 
 * add it to Deluge from Preferences -> Plugins -> Install Plugin
 
+* now you can go to Preferences -> Default Trackers and add individual default trackers, or the URL of a list that should be periodically downloaded
+  (e.g.: https://newtrackon.com/api/stable
+or https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt)
+
 ## Troubleshooting
 
 To get Deluge's output on Windows, run this in a terminal ("cmd" works):
