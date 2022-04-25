@@ -37,8 +37,7 @@ To get Deluge's output on Windows, run this in a terminal ("cmd" works):
 ## TODO:
 
 * log the added trackers so we can remove them from torrents when they are deleted from the default list
-* WebUI version
 
 [1]: http://deluge-torrent.org/
-[2]: https://github.com/stefantalpalaru/deluge-default-trackers/raw/master/egg/DefaultTrackers-0.3-py3.7.egg
+[2]: https://github.com/stefantalpalaru/deluge-default-trackers/raw/master/egg
 

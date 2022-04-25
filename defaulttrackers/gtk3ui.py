@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # gtkui.py
 #
-# Copyright (C) 2013-2019 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2022 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -41,6 +41,7 @@
 from __future__ import absolute_import, unicode_literals
 from gi.repository import Gtk
 import logging
+import os
 
 from deluge.ui.client import client
 from deluge.plugins.pluginbase import Gtk3PluginBase
@@ -67,7 +68,7 @@ class OptionsDialog():
         self.gtkui = gtkui
 
     def show(self, options=None, item_id=None, item_index=None):
-        self.builder = Gtk.Builder.new_from_file(get_resource("config.ui"))
+        self.builder = Gtk.Builder.new_from_file(get_resource("options.ui"))
         self.builder.connect_signals({
             "on_opts_add_button_clicked": self.on_add,
             "on_opts_apply_button_clicked": self.on_apply,
@@ -110,6 +111,7 @@ class OptionsDialog():
                 if not self.in_store(url):
                     self.gtkui.store.append([url])
                     self.gtkui.trackers.append({"url": url})
+            self.dialog.response(Gtk.ResponseType.DELETE_EVENT)
         except Exception as err:
             dialogs.ErrorDialog("Error", str(err), self.dialog).run()
 
@@ -117,7 +119,7 @@ class OptionsDialog():
         # generate options dict based on gtk objects
         buffer = self.builder.get_object("tracker_entry").get_buffer()
         options = {
-            "urls": buffer.get_text(*buffer.get_bounds()).split(),
+            "urls": buffer.get_text(*buffer.get_bounds(), False).split(),
         }
         if len(options["urls"]) == 0:
             raise Exception("no URLs")
@@ -128,6 +130,7 @@ class OptionsDialog():
             options = self.generate_opts()
             self.gtkui.store[self.item_id][0] = options["urls"][0]
             self.gtkui.trackers[self.item_index]["url"] = options["urls"][0]
+            self.dialog.response(Gtk.ResponseType.DELETE_EVENT)
         except Exception as err:
             dialogs.ErrorDialog("Error", str(err), self.dialog).run()
 

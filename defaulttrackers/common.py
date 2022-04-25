@@ -1,7 +1,7 @@
-#
+# -*- coding: utf-8 -*-
 # common.py
 #
-# Copyright (C) 2013-2019 Stefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2022 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -39,9 +39,8 @@
 #
 
 
-from __future__ import absolute_import, unicode_literals
+import os
+from pkg_resources import resource_filename
 
 def get_resource(filename):
-    import pkg_resources, os
-    return pkg_resources.resource_filename("defaulttrackers",
-                                           os.path.join("data", filename))
+    return resource_filename(__package__, os.path.join("data", filename))
