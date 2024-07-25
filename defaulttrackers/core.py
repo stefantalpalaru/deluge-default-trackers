@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # core.py
 #
-# Copyright (C) 2013-2019 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2024 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -101,7 +101,7 @@ class Core(CorePluginBase):
                     except:
                         # maybe an older Python version without a "context" argument
                         page = urllib.request.urlopen(req).read()
-                    new_trackers = [decode_bytes(url) for url in re.findall(b'\w+://[\w\-.:/]+', page) if is_url(decode_bytes(url))]
+                    new_trackers = [decode_bytes(url) for url in re.findall(rb'\w+://[\w\-.:/]+', page) if is_url(decode_bytes(url))]
                     if new_trackers:
                         # replace all existing trackers
                         self.config["trackers"] = []
