@@ -2,7 +2,7 @@
 #
 # setup.py
 #
-# Copyright (C) 2013-2022 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
+# Copyright (C) 2013-2024 Ștefan Talpalaru <stefantalpalaru@yahoo.com>
 #
 # Basic plugin template created by:
 # Copyright (C) 2008 Martijn Voncken <mvoncken@gmail.com>
@@ -45,7 +45,7 @@ from setuptools import setup
 __plugin_name__ = "DefaultTrackers"
 __author__ = u"Ștefan Talpalaru"
 __author_email__ = "stefantalpalaru@yahoo.com"
-__version__ = "0.5"
+__version__ = "0.6"
 __url__ = "https://github.com/stefantalpalaru/deluge-default-trackers"
 __license__ = "GPLv3"
 __description__ = "Add a list of default trackers to all the public torrents"
