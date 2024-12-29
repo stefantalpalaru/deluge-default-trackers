@@ -45,10 +45,10 @@ from setuptools import setup
 __plugin_name__ = "DefaultTrackers"
 __author__ = u"Ștefan Talpalaru"
 __author_email__ = "stefantalpalaru@yahoo.com"
-__version__ = "0.6"
+__version__ = "0.7"
 __url__ = "https://github.com/stefantalpalaru/deluge-default-trackers"
 __license__ = "GPLv3"
-__description__ = "Add a list of default trackers to all the public torrents"
+__description__ = "Add default trackers to all public torrents"
 __long_description__ = """
 Create a list of default trackers that will be added to new public torrents
 (and old ones after restarting Deluge). The plugin will not duplicate existing
