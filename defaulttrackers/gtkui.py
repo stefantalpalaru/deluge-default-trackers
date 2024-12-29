@@ -178,9 +178,12 @@ class GtkUI(GtkPluginBase):
             update_interval = int(self.glade.get_widget("tracker_list_update_interval").get_text() or 1)
         except:
             update_interval = 1
+        tracker_list_buffer = self.glade.get_widget("tracker_list_url").get_buffer()
+        start_iter, end_iter = tracker_list_buffer.get_bounds()
+        tracker_list_text = tracker_list_buffer.get_text(start_iter, end_iter, False)
         self.config.update({
             "trackers": [{"url": str(row[0])} for row in self.store],
-            "dynamic_trackerlist_url": self.glade.get_widget("tracker_list_url").get_text(),
+            "dynamic_trackerlist_url": tracker_list_text,
             "dynamic_trackers_update_interval": update_interval,
         })
         client.defaulttrackers.set_config(self.config)
@@ -193,7 +196,7 @@ class GtkUI(GtkPluginBase):
         self.config = config
         # dynamic tracker list
         if config["dynamic_trackerlist_url"]:
-            self.glade.get_widget("tracker_list_url").set_text(config["dynamic_trackerlist_url"])
+            self.glade.get_widget("tracker_list_url").get_buffer().set_text(config["dynamic_trackerlist_url"])
         self.glade.get_widget("tracker_list_update_interval").set_text(str(config["dynamic_trackers_update_interval"]))
         # trackers
         self.trackers = list(config["trackers"])
