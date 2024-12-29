@@ -86,27 +86,28 @@ class Core(CorePluginBase):
             now = datetime.datetime.utcnow()
             last_update = datetime.datetime.utcfromtimestamp(self.config["last_dynamic_trackers_update"])
             if now - last_update > datetime.timedelta(days=self.config["dynamic_trackers_update_interval"]):
+                combined_trackers = []
                 try:
-                    headers = {
+                    for url_line in self.config["dynamic_trackerlist_url"].splitlines():
+                        url_line = url_line.strip()
+                        if not url_line:
+                            continue
+                        headers = {
                             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0',
                             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                             'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
                             'Accept-Encoding': 'none',
                             'Accept-Language': 'en-US,en;q=0.8',
-                            }
-
-                    req = urllib.request.Request(self.config["dynamic_trackerlist_url"], headers=headers)
-                    try:
-                        page = urllib.request.urlopen(req, context=ssl._create_unverified_context()).read()
-                    except:
-                        # maybe an older Python version without a "context" argument
-                        page = urllib.request.urlopen(req).read()
-                    new_trackers = [decode_bytes(url) for url in re.findall(rb'\w+://[\w\-.:/]+', page) if is_url(decode_bytes(url))]
-                    if new_trackers:
-                        # replace all existing trackers
-                        self.config["trackers"] = []
-                        for new_tracker in new_trackers:
-                            self.config["trackers"].append({"url": new_tracker})
+                        }
+                        req = urllib.request.Request(url_line, headers=headers)
+                        try:
+                            page = urllib.request.urlopen(req, context=ssl._create_unverified_context()).read()
+                        except:
+                            page = urllib.request.urlopen(req).read()
+                        found = [decode_bytes(u) for u in re.findall(rb'\w+://[\w\-.:/]+', page) if is_url(decode_bytes(u))]
+                        combined_trackers.extend(found)
+                    if combined_trackers:
+                        self.config["trackers"] = [{"url": t} for t in combined_trackers]
                     self.config["last_dynamic_trackers_update"] = time.mktime(now.timetuple())
                 except:
                     traceback.print_exc()
