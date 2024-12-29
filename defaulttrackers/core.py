@@ -153,9 +153,9 @@ class Core(CorePluginBase):
         return self.config.config
 
     @export
-    def apply_existing(self):
-        """Apply trackerlist to existings torrents"""
-        
+    def apply_to_existing(self):
+        """Apply the tracker list to existings torrents"""
+
         for torrent_id in component.get("TorrentManager").torrents:
             self.on_torrent_added(torrent_id)
         return True

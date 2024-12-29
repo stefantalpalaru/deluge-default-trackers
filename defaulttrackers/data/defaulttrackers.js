@@ -85,18 +85,18 @@ DefaultTrackersPanel = Ext.extend(Ext.form.FormPanel, {
             autoWidth: true,
         }));
 
-        var applyExisting = this.add({
+        var applyToExisting = this.add({
             fieldLabel: _(''),
             name: 'trackers_apply',
             xtype: 'container',
             layout: 'hbox',
             items: [{
                 xtype: 'button',
-                text: 'Apply Existing Torrents',
+                text: 'Apply to existing torrents',
             }]
         });
 
-        applyExisting.getComponent(0).setHandler(this.onApplyExisting, this);
+        applyToExisting.getComponent(0).setHandler(this.onApplyToExisting, this);
 
         deluge.preferences.on('show', this.onPreferencesShow, this);
     },
@@ -132,8 +132,8 @@ DefaultTrackersPanel = Ext.extend(Ext.form.FormPanel, {
     onSetConfig: function() {
         this.opts.commit();
     },
-    onApplyExisting: function() {
-        deluge.client.defaulttrackers.apply_existing({
+    onApplyToExisting: function() {
+        deluge.client.defaulttrackers.apply_to_existing({
             success: function() {
                 Ext.Msg.alert('Success', 'Default trackers applied to existing torrents');
             },
